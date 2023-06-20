@@ -21,9 +21,22 @@ const userResolver = {
             args: any,
             context: IContext
         ) {
-            // const user = checkAuthHeader(context);
             const user = checkAuthCookie(context);
             return user;
+        },
+        logout(
+            _: any,
+            args: any,
+            context: IContext
+        ) {
+            context.req.session.destroy((err) => {
+                if (err) {
+                    console.log(err);
+                }
+            });
+            return {
+                message: "Logged out"
+            }
         }
     },
     Mutation: {
@@ -76,6 +89,7 @@ const userResolver = {
             }
             return {
                 user: {
+                    _id: savedUser._id,
                     email: savedUser.email,
                     username: savedUser.username,
                     img: savedUser.img,
@@ -116,6 +130,7 @@ const userResolver = {
             }
             return {
                 user: {
+                    _id: foundUser._id,
                     email: foundUser.email,
                     username: foundUser.username,
                     img: foundUser.img,
@@ -123,7 +138,7 @@ const userResolver = {
                 },
                 token
             }
-        },
+        }
     }
 }
 

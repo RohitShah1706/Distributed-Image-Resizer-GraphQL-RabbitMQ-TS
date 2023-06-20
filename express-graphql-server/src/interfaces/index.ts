@@ -4,15 +4,6 @@ interface IContext {
     req: Request;
 }
 
-interface IUser {
-    _id: string;
-    username: string;
-    email: string;
-    password: string;
-    img: string | null;
-    createdAt: string;
-}
-
 interface IUserCookie {
     _id: string;
     username: string;
@@ -21,11 +12,8 @@ interface IUserCookie {
     createdAt: string;
 }
 
-interface IRegisterInputErrors {
-    username?: string;
-    email?: string;
-    password?: string;
-    confirmPassword?: string;
+interface IUser extends IUserCookie{
+    password: string;
 }
 
 interface ILoginInputErrors {
@@ -33,14 +21,20 @@ interface ILoginInputErrors {
     password?: string;
 }
 
+interface IRegisterInputErrors extends ILoginInputErrors {
+    username?: string;
+    confirmPassword?: string;
+}
+
 interface IRegisterLoginUserResponse {
-    user: {
-        username: string;
-        email: string;
-        img: string | null;
-        createdAt: string;
-    };
+    user: IUserCookie;
     token: string;
+}
+
+interface IImage {
+    userId: string;
+    imgURL: string;
+    createdAt: string;
 }
 
 export {
@@ -49,5 +43,6 @@ export {
     IRegisterInputErrors,
     ILoginInputErrors,
     IRegisterLoginUserResponse,
-    IUserCookie
+    IUserCookie,
+    IImage
 }

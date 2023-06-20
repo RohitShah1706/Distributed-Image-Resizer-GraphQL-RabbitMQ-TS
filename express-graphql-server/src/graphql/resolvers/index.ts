@@ -1,4 +1,5 @@
 import userResolver from "./user"
+import imageResolver from "./image"
 
 export default {
     Query: {
@@ -6,6 +7,7 @@ export default {
         ...userResolver.Query
     },
     Mutation: {
-        ...userResolver.Mutation
+        ...userResolver.Mutation,
+        ...imageResolver.Mutation
     }
 }

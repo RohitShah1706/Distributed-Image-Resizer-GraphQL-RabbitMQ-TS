@@ -11,6 +11,8 @@ import connectDB from "./db/connectDB";
 import { redisClient } from "./db/connectRedis";
 import { PORT, MONGODB_URI, SECRET_KEY } from "./config";
 import { IUserCookie } from "./interfaces";
+
+
 declare module "express-session" {
     interface SessionData {
         user: IUserCookie;

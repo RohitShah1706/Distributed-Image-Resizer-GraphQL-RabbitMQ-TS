@@ -1,6 +1,7 @@
 import gql from "graphql-tag";
 
 const typeDefs = gql`
+
     input cacheCheck{
         key: String!
         value: String!
@@ -16,6 +17,9 @@ const typeDefs = gql`
         email: String!
         password: String!
     }
+    type Message {
+        message: String!
+    }
     type User {
         email: String!
         username: String!
@@ -29,11 +33,13 @@ const typeDefs = gql`
     type Query {
         message: String!
         getUser: User!
+        logout: Message!
     }
     type Mutation {
         getOrSetCache(cacheCheck: cacheCheck!): String!
         register(registerInput: RegisterInput!): UserResponse!
         login(loginInput: LoginInput!): UserResponse!
+ 
     }
 `
 export default typeDefs;
