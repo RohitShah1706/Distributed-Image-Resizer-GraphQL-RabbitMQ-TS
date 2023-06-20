@@ -10,14 +10,21 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "apollo-server": "^3.12.0",
+    "apollo-server-express": "^3.12.0",
+    "connect-redis": "^5.0.0",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
+    "express-session": "^1.17.3",
     "graphql": "^16.6.0",
     "mongoose": "^7.3.0",
-    "redis": "^4.6.7"
+    "redis": "^3.1.2"
   },
   "devDependencies": {
+    "@types/connect-redis": "^0.0.20",
+    "@types/cookie-parser": "^1.4.3",
+    "@types/express-session": "^1.17.7",
     "nodemon": "^2.0.22",
     "ts-node": "^10.9.1"
   }

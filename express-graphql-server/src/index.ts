@@ -1,10 +1,49 @@
-import { ApolloServer } from "apollo-server";
+import express from "express"
+import { ApolloServer } from "apollo-server-express";
+import cors from "cors"
+import cookieParser from "cookie-parser";
+import session from "express-session";
+import connectRedis from "connect-redis";
 
 import typeDefs from "./graphql/typedefs";
 import resolvers from "./graphql/resolvers";
-import { PORT, MONGODB_URI } from "./config";
 import connectDB from "./db/connectDB";
 import { redisClient } from "./db/connectRedis";
+import { PORT, MONGODB_URI, SECRET_KEY } from "./config";
+
+const app = express();
+const RedisStore = connectRedis(session);
+
+redisClient.on("error", (err) => {
+    console.error(err);
+})
+redisClient.on("connect", () => {
+    console.log("Connected to Redis");
+})
+
+// ! middleware
+app.use(cors({
+    origin: "*",
+    credentials: true
+}))
+app.use(express.json())
+app.use(cookieParser()) 
+app.use(session({
+    store: new RedisStore({ client: redisClient }),
+    saveUninitialized: false,
+    secret: SECRET_KEY,
+    resave: false,
+    cookie: {
+        maxAge: 60 * 60 * 1 // 1 hour
+    }
+}))
+
+app.use((req, res, next) => {
+    if(!req.session) {
+        return next(new Error("Session is not initialized"));
+    }
+    next();
+})
 
 const server = new ApolloServer({
     typeDefs,
@@ -16,16 +55,19 @@ const server = new ApolloServer({
 })
 
 const startServer = async() => {
-    connectDB(MONGODB_URI)
-        .then(() => console.log("Connected to MongoDB"))
-        .catch(err => console.log(err));
-    // await connectDB(MONGODB_URI);    
-    // console.log("Connected to MongoDB");    
-    await redisClient.connect();
-    console.log("Connected to Redis");
-    server.listen(PORT, () => {
-        console.log(`Server running at port ${PORT} with introspection: ${process.env.INTROSPECTION_ENABLED}`);
-    })
+    try {
+        await connectDB(MONGODB_URI);
+        console.log("Connected to MongoDB");
+        
+        await server.start();
+        server.applyMiddleware({ app });
+        
+        app.listen(PORT, () => {
+            console.log(`Server running at http://localhost:${PORT}${server.graphqlPath}`);
+        })
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 startServer();

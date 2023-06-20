@@ -1,4 +1,4 @@
-import * as redis from "redis"
+import Redis from "redis"
 
 import { 
     DEFAULT_EXPIRATION,
@@ -7,12 +7,10 @@ import {
     REDIS_PORT
 } from "../config"
 
-const redisClient = redis.createClient({
+const redisClient = Redis.createClient({
     password: REDIS_PASSWORD,
-    socket: {
-        host: REDIS_HOST,
-        port: parseInt(REDIS_PORT)
-    }
+    host: REDIS_HOST,
+    port: parseInt(REDIS_PORT)
 })
 
 /**
@@ -24,28 +22,23 @@ const redisClient = redis.createClient({
  * @returns {Promise} - A promise that resolves to the data from the cache or the API
  *
  */
-
 const getOrSetCache = <T>(key: string, cb: () => Promise<T>): Promise<T> => {
     return new Promise((resolve, reject) => {
-        redisClient.exists(key)
-        .then(exists => {
-            if(exists){
-                redisClient.get(key)
-                .then((data) => {
-                    console.log("Cache Hit");
-                    resolve(JSON.parse(data || ""))
-                })
+        redisClient.get(key, (err, data) => {
+            if(err) {
+                reject(err)
+            }
+            if(data !== null) {
+                console.log("Cache Hit");
+                resolve(JSON.parse(data || ""))
             }else {
                 console.log("Cache Miss");
                 cb()
                 .then((freshData: T) => {
-                    redisClient.setEx(key, DEFAULT_EXPIRATION, JSON.stringify(freshData))
+                    redisClient.setex(key, DEFAULT_EXPIRATION, JSON.stringify(freshData))
                     resolve(freshData)
                 })
             }
-        })
-        .catch(err => {
-            reject(err)
         })
     })
 }

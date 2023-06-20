@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const INTROSPECTION = process.env.INTROSPECTION_ENABLED === "true"
-const SECRET_KEY = process.env.SECRET_KEY
+const SECRET_KEY = process.env.SECRET_KEY || "secretkey"
 const DEFAULT_EXPIRATION = parseInt(process.env.DEFAULT_EXPIRATION || "3600")
 const REDIS_HOST = process.env.REDIS_HOST || "redis"
 const REDIS_PORT = process.env.REDIS_PORT || "6379"
