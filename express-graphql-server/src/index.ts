@@ -10,6 +10,12 @@ import resolvers from "./graphql/resolvers";
 import connectDB from "./db/connectDB";
 import { redisClient } from "./db/connectRedis";
 import { PORT, MONGODB_URI, SECRET_KEY } from "./config";
+import { IUserCookie } from "./interfaces";
+declare module "express-session" {
+    interface SessionData {
+        user: IUserCookie;
+    }
+}
 
 const app = express();
 const RedisStore = connectRedis(session);
@@ -34,7 +40,7 @@ app.use(session({
     secret: SECRET_KEY,
     resave: false,
     cookie: {
-        maxAge: 60 * 60 * 1 // 1 hour
+        maxAge: 1000 * 60 * 60 * 1 // 1 hour
     }
 }))
 
@@ -60,7 +66,7 @@ const startServer = async() => {
         console.log("Connected to MongoDB");
         
         await server.start();
-        server.applyMiddleware({ app });
+        server.applyMiddleware({ app, cors: false });
         
         app.listen(PORT, () => {
             console.log(`Server running at http://localhost:${PORT}${server.graphqlPath}`);

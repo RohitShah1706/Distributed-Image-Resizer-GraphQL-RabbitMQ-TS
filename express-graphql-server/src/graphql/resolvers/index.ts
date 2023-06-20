@@ -2,7 +2,8 @@ import userResolver from "./user"
 
 export default {
     Query: {
-        message: () => "Hello World!"
+        message: () => "Hello World!",
+        ...userResolver.Query
     },
     Mutation: {
         ...userResolver.Mutation
