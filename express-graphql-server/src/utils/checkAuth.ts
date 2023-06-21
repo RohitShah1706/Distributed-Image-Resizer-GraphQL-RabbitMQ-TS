@@ -1,5 +1,6 @@
 import jsonwebtoken from 'jsonwebtoken';
 import { AuthenticationError } from 'apollo-server-express';
+import { Request, Response, NextFunction } from 'express';
 
 import { SECRET_KEY } from '../config';
 import { IContext } from '../interfaces';
@@ -30,7 +31,21 @@ const checkAuthCookie = (context: IContext) => {
     throw new AuthenticationError("Invalid/Expired Credentials");
 }
 
+const checkAuthMiddleware = (req: Request, res: Response, next: NextFunction) => {
+    try{
+        const user = checkAuthCookie({ req });
+    }
+    catch(err) {
+        res.status(401).send({
+            message: "Invalid/Expired Credentials"
+        });
+        return;
+    }
+    next();
+}
+
 export {
     checkAuthHeader,
-    checkAuthCookie
+    checkAuthCookie,
+    checkAuthMiddleware
 };

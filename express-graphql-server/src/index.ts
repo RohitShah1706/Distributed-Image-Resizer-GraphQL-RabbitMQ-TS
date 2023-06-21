@@ -1,5 +1,6 @@
 import express from "express"
 import { ApolloServer } from "apollo-server-express";
+import multer from "multer";
 import cors from "cors"
 import cookieParser from "cookie-parser";
 import session from "express-session";
@@ -9,6 +10,8 @@ import typeDefs from "./graphql/typedefs";
 import resolvers from "./graphql/resolvers";
 import connectDB from "./db/connectDB";
 import { redisClient } from "./db/connectRedis";
+import { checkAuthMiddleware } from "./utils/checkAuth";
+import { getFile, uploadFiles } from "./controllers/fileController";
 import { PORT, MONGODB_URI, SECRET_KEY } from "./config";
 import { IUserCookie } from "./interfaces";
 
@@ -19,14 +22,17 @@ declare module "express-session" {
     }
 }
 
+// ! const objects
 const app = express();
+const upload = multer();
 const RedisStore = connectRedis(session);
-
-redisClient.on("error", (err) => {
-    console.error(err);
-})
-redisClient.on("connect", () => {
-    console.log("Connected to Redis");
+const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+    // ! context: fn that returns a request obj that is passed to all resolvers
+    // ! allows us to acces req obj in resolvers
+    context: ({ req }) => ({ req }),
+    introspection: process.env.INTROSPECTION_ENABLED === "true"
 })
 
 // ! middleware
@@ -53,14 +59,9 @@ app.use((req, res, next) => {
     next();
 })
 
-const server = new ApolloServer({
-    typeDefs,
-    resolvers,
-    // ! context: fn that returns a request obj that is passed to all resolvers
-    // ! allows us to acces req obj in resolvers
-    context: ({ req }) => ({ req }),
-    introspection: process.env.INTROSPECTION_ENABLED === "true"
-})
+// ! routes
+app.post("/upload", upload.array("images", 10), checkAuthMiddleware, uploadFiles);
+app.get("/files/:key", checkAuthMiddleware, getFile);
 
 const startServer = async() => {
     try {
@@ -77,5 +78,12 @@ const startServer = async() => {
         console.log(error);
     }
 }
-
 startServer();
+
+redisClient.on("error", (err) => {
+    console.error(err);
+})
+redisClient.on("connect", () => {
+    console.log("Connected to Redis");
+})
+
