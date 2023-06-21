@@ -38,6 +38,7 @@ interface IImage {
 }
 
 interface IImageTask {
+    userId: string;
     key: string;
     operations: string[];
 }
