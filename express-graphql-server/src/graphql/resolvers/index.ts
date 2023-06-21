@@ -4,7 +4,8 @@ import imageResolver from "./image"
 export default {
     Query: {
         message: () => "Hello World!",
-        ...userResolver.Query
+        ...userResolver.Query,
+        ...imageResolver.Query
     },
     Mutation: {
         ...userResolver.Mutation,

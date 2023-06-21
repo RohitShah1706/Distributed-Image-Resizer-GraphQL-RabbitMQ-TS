@@ -17,14 +17,7 @@ const getFile = async(req: Request, res: Response) => {
     readStream.pipe(res);
 }
 
-const getUserFiles = async(req: Request, res: Response) => {
-    const _id = req.session.user?._id;
-    const files = await getAllFilesAfterUserKey(_id);
-    res.send(files);
-}
-
 export {
     uploadFiles,
     getFile,
-    getUserFiles
 }

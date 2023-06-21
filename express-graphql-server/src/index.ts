@@ -8,13 +8,13 @@ import connectRedis from "connect-redis";
 
 import typeDefs from "./graphql/typedefs";
 import resolvers from "./graphql/resolvers";
-import connectDB from "./db/connectDB";
-import { redisClient } from "./db/connectRedis";
+import connectDB from "./connection/connectDB";
+import { redisClient } from "./connection/connectRedis";
+import { connectToRabbitMQ } from "./connection/connectRabbitMQ";
 import { checkAuthMiddleware } from "./utils/checkAuth";
-import { getFile, uploadFiles, getUserFiles } from "./controllers/fileController";
+import { getFile, uploadFiles } from "./controllers/fileController";
 import { PORT, MONGODB_URI, SECRET_KEY } from "./config";
 import { IUserCookie } from "./interfaces";
-
 
 declare module "express-session" {
     interface SessionData {
@@ -51,7 +51,6 @@ app.use(session({
         maxAge: 1000 * 60 * 60 * 1 // 1 hour
     }
 }))
-
 app.use((req, res, next) => {
     if(!req.session) {
         return next(new Error("Session is not initialized"));
@@ -61,7 +60,6 @@ app.use((req, res, next) => {
 
 // ! routes
 app.post("/upload", upload.array("images", 10), checkAuthMiddleware, uploadFiles);
-app.get("/files", checkAuthMiddleware, getUserFiles);
 app.get("/files/:key", checkAuthMiddleware, getFile);
 
 const startServer = async() => {
@@ -72,6 +70,9 @@ const startServer = async() => {
         await server.start();
         server.applyMiddleware({ app, cors: false });
         
+        await connectToRabbitMQ();
+        console.log("Connected to RabbitMQ");
+
         app.listen(PORT, () => {
             console.log(`Server running at http://localhost:${PORT}${server.graphqlPath}`);
         })

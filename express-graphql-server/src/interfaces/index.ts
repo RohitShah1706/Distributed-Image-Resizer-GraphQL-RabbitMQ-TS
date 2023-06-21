@@ -37,6 +37,11 @@ interface IImage {
     createdAt: string;
 }
 
+interface IImageTask {
+    key: string;
+    operations: string[];
+}
+
 export {
     IContext,
     IUser,
@@ -44,5 +49,6 @@ export {
     ILoginInputErrors,
     IRegisterLoginUserResponse,
     IUserCookie,
-    IImage
+    IImage,
+    IImageTask
 }

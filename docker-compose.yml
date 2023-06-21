@@ -1,0 +1,16 @@
+# give me a docker compose to run rabbitmq
+version: '3'
+services:
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:management
+    ports:
+      - 5672:5672
+      - 15672:15672
+    environment:
+      RABBITMQ_DEFAULT_USER: rabbitmq
+      RABBITMQ_DEFAULT_PASS: rohit123
+
+networks:
+  default:
+    driver: bridge

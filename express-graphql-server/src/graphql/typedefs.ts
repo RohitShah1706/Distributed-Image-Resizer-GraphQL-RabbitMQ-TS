@@ -17,6 +17,10 @@ const typeDefs = gql`
         email: String!
         password: String!
     }
+    input EditImagesInput {
+        keys: [String!]!
+        operations: [String!]!
+    }
     type Message {
         message: String!
     }
@@ -34,12 +38,13 @@ const typeDefs = gql`
         message: String!
         getUser: User!
         logout: Message!
+        getUserImages: [String!]!
     }
     type Mutation {
         getOrSetCache(cacheCheck: cacheCheck!): String!
         register(registerInput: RegisterInput!): UserResponse!
         login(loginInput: LoginInput!): UserResponse!
- 
+        editImages(editImagesInput: EditImagesInput!): Message!
     }
 `
 export default typeDefs;
