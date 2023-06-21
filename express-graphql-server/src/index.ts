@@ -11,7 +11,7 @@ import resolvers from "./graphql/resolvers";
 import connectDB from "./db/connectDB";
 import { redisClient } from "./db/connectRedis";
 import { checkAuthMiddleware } from "./utils/checkAuth";
-import { getFile, uploadFiles } from "./controllers/fileController";
+import { getFile, uploadFiles, getUserFiles } from "./controllers/fileController";
 import { PORT, MONGODB_URI, SECRET_KEY } from "./config";
 import { IUserCookie } from "./interfaces";
 
@@ -61,6 +61,7 @@ app.use((req, res, next) => {
 
 // ! routes
 app.post("/upload", upload.array("images", 10), checkAuthMiddleware, uploadFiles);
+app.get("/files", checkAuthMiddleware, getUserFiles);
 app.get("/files/:key", checkAuthMiddleware, getFile);
 
 const startServer = async() => {

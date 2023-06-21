@@ -35,7 +35,26 @@ const getFileStreamFromS3 = (userId: string | undefined, key: string) => {
     return s3.getObject(params).createReadStream();
 }
 
+const getAllFilesAfterUserKey = async (userId: string | undefined) => {
+    const params = {
+        Bucket: AWS_S3_BUCKET_NAME,
+        Prefix: `${userId}/`,
+    }
+    const data = await s3.listObjectsV2(params).promise();
+    var files: string[] = []
+    if(data.Contents) {
+        data.Contents.forEach((file) => {
+            if(file.Key) {
+                const key = file.Key.split("/")[1];
+                files.push(key);
+            }
+        })
+    }
+    return files;
+}
+
 export {
     uploadFilesToS3,
     getFileStreamFromS3,
+    getAllFilesAfterUserKey
 }
