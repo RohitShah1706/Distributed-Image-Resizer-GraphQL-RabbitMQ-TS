@@ -1,4 +1,5 @@
 import S3 from 'aws-sdk/clients/s3';
+import { v4 as uuidGen } from "uuid"
 
 import {
     AWS_S3_BUCKET_NAME,
@@ -19,7 +20,7 @@ const uploadFilesToS3 = async (userId: string | undefined, files: Express.Multer
     const promises = files.map(async (file) => {
         const params = {
             Bucket: AWS_S3_BUCKET_NAME,
-            Key: `${userId}/${file.originalname}`,
+            Key: `${userId}/${uuidGen()}.png`,
             Body: file.buffer,
         }
         return await s3.upload(params).promise();

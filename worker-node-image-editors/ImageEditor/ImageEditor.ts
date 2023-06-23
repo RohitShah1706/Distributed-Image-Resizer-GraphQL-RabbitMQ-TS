@@ -1,11 +1,9 @@
 import sharp from "sharp";
 
 class ImageEditor {
-    imagePath: string;
     image: sharp.Sharp;
-    constructor(imagePath: string) {
-        this.imagePath = imagePath;
-        this.image = sharp(imagePath);
+    constructor(image: sharp.Sharp) {
+        this.image = image;
     }
 
     resize(width: number, height: number) {

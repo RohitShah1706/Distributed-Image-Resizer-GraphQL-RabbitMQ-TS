@@ -31,7 +31,7 @@ const consumeTasks = async () => {
             console.log(`[x] Received task: userId:${userId} and key: ${key} and operations: ${operations}`)
             
             // ! edit image
-            const response = await handleImageEditing(key, operations)
+            const response = await handleImageEditing(userId, key, operations)
             console.log(`[x] Task completed`)
 
             // ! send reply to replyQueue

@@ -6,6 +6,10 @@ import { uploadFilesToS3, getFileStreamFromS3, getAllFilesAfterUserKey } from ".
 const uploadFiles = async (req: Request, res: Response) => {
     const _id = req.session.user?._id;
     const files = req.files as Express.Multer.File[];
+    if(!files) {
+        res.status(400).send("No files uploaded");
+        return;
+    }
     const results = await uploadFilesToS3(_id, files);
     res.send("Uploaded");
 }
