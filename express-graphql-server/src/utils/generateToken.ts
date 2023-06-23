@@ -1,6 +1,6 @@
 import jsonwebtoken from "jsonwebtoken"
 
-import { IUser } from "../interfaces"
+import { IUser } from "../types"
 import { SECRET_KEY } from "../config"
 
 const generateToken  = (user: IUser) => {

@@ -5,7 +5,8 @@ import {
     RABBITMQ_PASS,
     RABBITMQ_PORT,
     RABBITMQ_USER,
-    RABBITMQ_MAIN_QUEUE
+    RABBITMQ_MAIN_QUEUE,
+    RABBITMQ_REPLY_QUEUE
 } from '../config'
 
 const connectionURI = `amqp://${RABBITMQ_USER}:${RABBITMQ_PASS}@${RABBITMQ_HOST}:${RABBITMQ_PORT}`
@@ -16,6 +17,9 @@ const connectToRabbitMQ = async () => {
     channel = await connection.createChannel()
     await channel.assertQueue(RABBITMQ_MAIN_QUEUE, {
         // ! durable - queue will survive when broker restarts
+        durable: true
+    })
+    await channel.assertQueue(RABBITMQ_REPLY_QUEUE, {
         durable: true
     })
 }

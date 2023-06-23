@@ -35,6 +35,8 @@ const handleImageEditing = async (userId: string, key: string, operations:string
         message: "Image processed successfully",
         status: "SUCCESS"
     }
+    // send response to replyQueue
+    
     return response
 }
 

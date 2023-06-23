@@ -1,4 +1,4 @@
-import { IContext, IImageTask } from "../../interfaces"
+import { IContext, IImageTask } from "../../types"
 import { checkAuthCookie } from "../../utils/checkAuth";
 import { getChannel } from "../../connection/connectRabbitMQ"
 import { getAllFilesAfterUserKey } from "../../utils/S3FileHandler"

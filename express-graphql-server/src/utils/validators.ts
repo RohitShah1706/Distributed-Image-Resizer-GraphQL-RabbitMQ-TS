@@ -1,4 +1,4 @@
-import { IRegisterInputErrors, ILoginInputErrors } from "../interfaces";
+import { IRegisterInputErrors, ILoginInputErrors } from "../types";
 
 const validateRegisterInput = (username: string, email: string, password: string, confirmPassword: string) => {
     const errors: IRegisterInputErrors = {};

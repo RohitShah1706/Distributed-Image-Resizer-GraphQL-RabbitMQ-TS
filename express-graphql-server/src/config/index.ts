@@ -16,7 +16,8 @@ const RABBITMQ_HOST = process.env.RABBITMQ_HOST || "localhost"
 const RABBITMQ_PORT = process.env.RABBITMQ_PORT || "5672"
 const RABBITMQ_USER = process.env.RABBITMQ_USER || "rabbitmq"
 const RABBITMQ_PASS = process.env.RABBITMQ_PASS || "rohit123"
-const RABBITMQ_MAIN_QUEUE = process.env.RABBITMQ_MAIN_QUEUE || "dis_image_queue"
+const RABBITMQ_MAIN_QUEUE = process.env.RABBITMQ_MAIN_QUEUE || "dis_image_main_queue"
+const RABBITMQ_REPLY_QUEUE = process.env.RABBITMQ_REPLY_QUEUE || "dis_image_reply_queue"
 
 const PORT = process.env.PORT || 5000
 
@@ -37,6 +38,7 @@ export {
     RABBITMQ_USER,
     RABBITMQ_PASS,
     RABBITMQ_MAIN_QUEUE,
+    RABBITMQ_REPLY_QUEUE,
 
     PORT,
 }

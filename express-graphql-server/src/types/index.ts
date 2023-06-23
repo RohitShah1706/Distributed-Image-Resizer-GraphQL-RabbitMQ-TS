@@ -31,9 +31,13 @@ interface IRegisterLoginUserResponse {
     token: string;
 }
 
-interface IImage {
+interface IImageConsumerFromWorker {
     userId: string;
-    imgURL: string;
+    key: string;
+}
+
+interface IImage extends IImageConsumerFromWorker{
+    name: string;
     createdAt: string;
 }
 
@@ -51,5 +55,6 @@ export {
     IRegisterLoginUserResponse,
     IUserCookie,
     IImage,
+    IImageConsumerFromWorker,
     IImageTask
 }

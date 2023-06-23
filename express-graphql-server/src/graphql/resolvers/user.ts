@@ -2,7 +2,7 @@ import bcrypt from "bcryptjs"
 import { UserInputError } from "apollo-server-express"
 
 import { getOrSetCache } from "../../connection/connectRedis"
-import { IContext, IRegisterLoginUserResponse } from "../../interfaces";
+import { IContext, IRegisterLoginUserResponse } from "../../types";
 import User from "../../models/User";
 import generateToken from "../../utils/generateToken";
 import {

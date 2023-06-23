@@ -13,8 +13,10 @@ import { redisClient } from "./connection/connectRedis";
 import { connectToRabbitMQ } from "./connection/connectRabbitMQ";
 import { checkAuthMiddleware } from "./utils/checkAuth";
 import { getFile, uploadFiles } from "./controllers/fileController";
-import { PORT, MONGODB_URI, SECRET_KEY } from "./config";
-import { IUserCookie } from "./interfaces";
+import { saveImage } from "./controllers/imageController"
+import { getChannel } from "./connection/connectRabbitMQ"
+import { PORT, MONGODB_URI, SECRET_KEY, RABBITMQ_REPLY_QUEUE } from "./config";
+import { IUserCookie, IImageConsumerFromWorker } from "./types";
 
 declare module "express-session" {
     interface SessionData {
@@ -62,6 +64,20 @@ app.use((req, res, next) => {
 app.post("/upload", upload.array("images", 10), checkAuthMiddleware, uploadFiles);
 app.get("/files/:key", checkAuthMiddleware, getFile);
 
+const consumeImagesFromWorker = async() => {
+    console.log("Consuming images from worker node...");
+    getChannel().consume(RABBITMQ_REPLY_QUEUE, async (msg) => {
+        if(msg) {
+            const { key, userId }: IImageConsumerFromWorker = JSON.parse(msg.content.toString());
+            await saveImage(userId, key.split("/")[1]);
+            getChannel().ack(msg);
+        }
+    }, {
+        // ! noAck - automatically ack the msg when it is received
+        noAck: false
+    })
+}
+
 const startServer = async() => {
     try {
         await connectDB(MONGODB_URI);
@@ -76,6 +92,8 @@ const startServer = async() => {
         app.listen(PORT, () => {
             console.log(`Server running at http://localhost:${PORT}${server.graphqlPath}`);
         })
+
+        await consumeImagesFromWorker();
     } catch (error) {
         console.log(error);
     }

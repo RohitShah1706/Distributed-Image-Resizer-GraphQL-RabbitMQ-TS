@@ -3,7 +3,7 @@ import { AuthenticationError } from 'apollo-server-express';
 import { Request, Response, NextFunction } from 'express';
 
 import { SECRET_KEY } from '../config';
-import { IContext } from '../interfaces';
+import { IContext } from '../types';
 
 const checkAuthHeader = (context: IContext) => {
     const authHeader = context.req.headers.authorization;
