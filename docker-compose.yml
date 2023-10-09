@@ -10,6 +10,9 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: rabbitmq
       RABBITMQ_DEFAULT_PASS: rohit123
+    # make the data persistent 
+    volumes:
+      - ./rabbitmq_data:/var/lib/rabbitmq
 
 networks:
   default:
