@@ -68,10 +68,17 @@ npm run dev
    - The frontend sends a request to the backend, containing the uploaded image and resizing parameters.
    - The backend receives the request and enqueues the image resizing task in RabbitMQ.
 
+Example: We are submitting request to apply 3 operations on two images.
+
+![Submit Task Request](screenshots/submit-tasks.png)
+
 3. Task Distribution:
    - Worker nodes, independent processes, or services, continuously listen for tasks in the RabbitMQ queue.
    - Once a worker node detects a new task, it retrieves the message from RabbitMQ and starts processing the image resizing.
 
+Example: The above request is split into 2 tasks and distributed to 2 worker nodes (multiple worker nodes can be used for parallel processing and to increase throughput).
+
+![Task Distribution](screenshots/tasks-submit.gif)
 4. Image Resizing Process:
    - The worker node utilizes the Sharp library to perform the required image resizing based on the received task details.
    - After completing the resizing process, the worker node can store the resized image in a designated location.
